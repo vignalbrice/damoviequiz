@@ -1,16 +1,19 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCounter, setCounter } from "../../store/selectors/app";
+import { setCounter } from "../../store/actions/app";
 
-const CountDown = () => {
-  const counter = useSelector(getCounter);
+const CountDown = ({ isPlay }) => {
+  const { counter } = useSelector((state) => state);
   const dispatch = useDispatch();
   // Third Attempts
   useEffect(() => {
-    const timer =
-      counter > 0 && setInterval(() => dispatch(setCounter(counter - 1)), 1000);
-    return () => clearInterval(timer);
-  }, [counter]);
+    if (isPlay) {
+      const timer =
+        counter > 0 &&
+        setInterval(() => dispatch(setCounter(counter - 1)), 1000);
+      return () => clearInterval(timer);
+    }
+  }, [counter, isPlay]);
 
   return (
     <div className='text-center py-5'>

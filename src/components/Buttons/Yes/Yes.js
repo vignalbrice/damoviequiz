@@ -1,35 +1,47 @@
-import { useDispatch } from "react-redux";
-import fetcher from "../../../helpers/fetcher";
-import { setCounter } from "../../../store/selectors/app";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCounter,
+  setHighScore,
+  setScore,
+  setShowScore,
+} from "../../../store/actions/app";
+import Swal from "sweetalert2";
 
-const Yes = ({ setCurrentQuestion, currentQuestion, movieId, actorId }) => {
+const Yes = ({ setCurrentQuestion, currentQuestion, questions }) => {
+  const { score } = useSelector((state) => state);
   const dispatch = useDispatch();
-  console.log(movieId);
-  async function getCastCrewWithFilms() {
-    try {
-      const { data } = await fetcher.get(
-        `/movie/${movieId}?${process.env.REACT_APP_SECRET_KEY}&append_to_response=credits`
-      );
-      console.log(
-        data.credits.cast.filter((item, index) => item.id === actorId)
-      );
-    } catch (error) {
-      alert(error); // catches both errors
+  function setScoreResult(e) {
+    if (questions[currentQuestion].answer.includes(e.target.value)) {
+      dispatch(setCurrentQuestion(++currentQuestion));
+      dispatch(setCounter(60));
+      dispatch(setScore(10));
+    } else {
+      Swal.fire({
+        title: "Oops..mauvaise réponse",
+        text: "Vous avez perdu ! :(",
+        icon: "error",
+        allowOutsideClick: false,
+      }).then((resp) => {
+        if (resp.isConfirmed) {
+          dispatch(setCurrentQuestion(0));
+          dispatch(setShowScore(true));
+          dispatch(setHighScore(score));
+        }
+      });
     }
   }
 
-  return (
-    <button
-      className='p-3 bg-green-500 text-white border-gray-100 rounded-sm w-64 font-medium text-xl'
-      onClick={() => {
-        setCurrentQuestion(++currentQuestion);
-        dispatch(setCounter(60));
-        getCastCrewWithFilms();
-      }}
-    >
-      Oui
-    </button>
-  );
+  if (currentQuestion < questions.length) {
+    return (
+      <button
+        className='p-3 bg-green-500 text-white border-gray-100 rounded-sm w-64 font-medium text-xl'
+        value={"vrai"}
+        onClick={(e) => setScoreResult(e)}
+      >
+        Oui
+      </button>
+    );
+  }
 };
 
 export default Yes;

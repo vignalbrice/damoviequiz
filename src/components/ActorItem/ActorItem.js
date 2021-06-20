@@ -1,33 +1,15 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setActor } from "../../store/selectors/app";
-
-const ActorItem = ({
-  id,
-  adult,
-  name,
-  known_for_department,
-  profile_path,
-  overview,
-  popularity,
-}) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setActor(name));
-  }, [name]);
-
+const ActorItem = ({ id, actor, picture }) => {
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col' key={id}>
       <div className='full-image'>
         <div
           className='backdrop-img wrapper rounded-lg flex flex-col justify-end'
           style={{
-            backgroundImage: `url(${process.env.REACT_APP_IMG_LINK}${profile_path})`,
+            backgroundImage: `url(${process.env.REACT_APP_IMG_LINK}/${picture})`,
           }}
         >
           <div className='text-white text-lg font-semibold text-center'>
-            {name}
+            {actor}
           </div>
         </div>
       </div>

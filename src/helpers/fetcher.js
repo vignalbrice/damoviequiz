@@ -5,13 +5,6 @@ function fetcherFactory({
 } = {}) {
   const fetcher = axios.create({
     baseURL: `${process.env.REACT_APP_API_LINK}`,
-    mode: "no-cors",
-    withCredentials: false,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "ALL, GET,PUT,POST,DELETE,PATCH,OPTIONS",
-    },
   });
   fetcher.interceptors.request.use((config) => {
     config.headers.common["Accept-Language"] = "FR-fr";
